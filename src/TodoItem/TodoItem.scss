@@ -1,0 +1,11 @@
+.TodoItem {
+  display: flex;
+
+  .textbox {
+    width: 300px;
+  }
+
+  .do-it {
+    margin: 0 3px;
+  }
+}

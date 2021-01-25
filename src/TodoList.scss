@@ -1,3 +1,17 @@
 .TodoList {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .item-list {
+    margin: 20px;
+    min-width: 600px;
+    border: solid #333 1px;
+    padding: 1em;
+
+    .add-item-prompt {
+      font-size: 18pt;
+      text-align: center;
+    }
+  }
 }
