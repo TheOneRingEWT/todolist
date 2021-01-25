@@ -8,4 +8,16 @@
   .do-it {
     margin: 0 3px;
   }
+
+  .description-block {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .actions {
+      * {
+        margin: 0 3px;
+      }
+    }
+  }
 }
