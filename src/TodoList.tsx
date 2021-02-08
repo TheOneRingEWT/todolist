@@ -6,7 +6,7 @@ import "./TodoList.scss";
 export const TodoList: FC = () => {
   const [todoItems, setTodoItems] = useState<TodoItemData[]>([]);
 
-  const onAddItemClickHandler = (addedItem: TodoItemData) => {
+  const onAddItemHandler = (addedItem: TodoItemData) => {
     setTodoItems((todoItems) => [...todoItems, addedItem]);
   };
 
@@ -27,7 +27,7 @@ export const TodoList: FC = () => {
 
   return (
     <div className="TodoList">
-      <TodoHeader onAddItemClick={onAddItemClickHandler} />
+      <TodoHeader onAddItem={onAddItemHandler} />
       <div className="item-list">
         {todoItems.length ? (
           todoItems.map((todoItem) => (

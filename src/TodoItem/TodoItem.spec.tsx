@@ -29,7 +29,7 @@ describe("TodoItem", () => {
     expect(description).toBeVisible();
   });
 
-  it("renders input fields when isUpdating is true", () => {
+  it("renders input field and Do It button when adding or updating TodoItem", () => {
     const todoItem = {
       id: Date.now(),
       description: "some-description",
@@ -60,12 +60,14 @@ describe("TodoItem", () => {
     expect(description).toBeNull();
   });
 
-  it("should be able to update the description when isUpdating is true", () => {
+  it("should call onDoIt callback when 'Do It' is clicked", () => {
     const todoItem: TodoItemData = {
       id: Date.now(),
       description: "some-description",
       isUpdating: true,
     };
+
+    const updatedItem = { ...todoItem, isUpdating: false };
 
     render(
       <TodoItem
@@ -74,42 +76,49 @@ describe("TodoItem", () => {
         onDelete={mockOnDelete}
       />
     );
-
-    let description = screen.getByTestId(
-      "description-input"
-    ) as HTMLInputElement;
-    expect(description.value).toBe("some-description");
-
-    userEvent.type(description, "{selectall}{del}some-new-description");
-
-    description = screen.getByTestId("description-input") as HTMLInputElement;
-    expect(description.value).toBe("some-new-description");
-  });
-
-  it("should change isUpdating from true to false when 'Do It' is clicked", () => {
-    const todoItem: TodoItemData = {
-      id: Date.now(),
-      description: "some-description",
-      isUpdating: true,
-    };
-
-    const updatedItem: TodoItemData = { ...todoItem, isUpdating: false };
-
-    render(
-      <TodoItem
-        todoItem={todoItem}
-        onDoIt={mockOnDoIt}
-        onDelete={mockOnDelete}
-      />
-    );
-
     const button = screen.getByText("Do It!");
     userEvent.click(button);
 
     expect(mockOnDoIt).toHaveBeenCalledWith(updatedItem);
   });
 
-  it("should be able to edit the description when 'edit' is clicked", () => {
+  it("should switch from input mode to read-only mode when 'Do It' is clicked", () => {
+    const todoItem: TodoItemData = {
+      id: Date.now(),
+      description: "some-description",
+      isUpdating: true,
+    };
+
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
+
+    let input = screen.queryByTestId("description-input");
+    expect(input).toBeVisible();
+
+    let description = screen.queryByText("some-description");
+    expect(description).toBeNull();
+
+    const doItButton = screen.getByText("Do It!");
+    userEvent.click(doItButton);
+
+    input = screen.queryByTestId("description-input");
+    description = screen.queryByText("some-description");
+
+    const editButton = screen.getByText("edit");
+    const deleteButton = screen.getByText("delete");
+
+    expect(input).toBeNull();
+    expect(description).toBeVisible();
+    expect(editButton).toBeVisible();
+    expect(deleteButton).toBeVisible();
+  });
+
+  it("should be able to edit the should switch from read-only mode to input mode when 'edit' is clicked", () => {
     const todoItem: TodoItemData = {
       id: Date.now(),
       description: "some-description",
@@ -125,18 +134,26 @@ describe("TodoItem", () => {
     );
 
     let description = screen.queryByText("some-description");
+    let editButton = screen.queryByText("edit");
+    let deleteButton = screen.queryByText("delete");
     let descriptionInput = screen.queryByTestId("description-input");
 
     expect(description).toBeVisible();
+    expect(editButton).toBeVisible();
+    expect(deleteButton).toBeVisible();
     expect(descriptionInput).toBeNull();
 
     const button = screen.getByText("edit");
     userEvent.click(button);
 
     description = screen.queryByText("some-description");
+    editButton = screen.queryByText("edit");
+    deleteButton = screen.queryByText("delete");
     descriptionInput = screen.queryByTestId("description-input");
 
     expect(description).toBeNull();
+    expect(editButton).toBeNull();
+    expect(deleteButton).toBeNull();
     expect(descriptionInput).toBeVisible();
   });
 
