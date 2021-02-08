@@ -81,4 +81,29 @@ describe("TodoItem", () => {
 
     expect(mockOnDoItClick).toHaveBeenCalledWith(updatedItem);
   });
+
+  it("should be able to edit the description when 'edit' is clicked", () => {
+    const todoItem: TodoItemData = {
+      id: Date.now(),
+      description: "some-description",
+      isUpdating: false,
+    };
+
+    render(<TodoItem todoItem={todoItem} onDoItClick={mockOnDoItClick} />);
+
+    let description = screen.queryByText("some-description");
+    let descriptionInput = screen.queryByTestId("description-input");
+
+    expect(description).toBeVisible();
+    expect(descriptionInput).toBeNull();
+
+    const button = screen.getByText("edit");
+    userEvent.click(button);
+
+    description = screen.queryByText("some-description");
+    descriptionInput = screen.queryByTestId("description-input");
+
+    expect(description).toBeNull();
+    expect(descriptionInput).toBeVisible();
+  });
 });

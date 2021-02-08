@@ -19,6 +19,7 @@ export interface OnDoItClick {
 export const TodoItem: FC<TodoItemProps> = (props) => {
   const { todoItem, onDoItClick } = props;
   const [description, setDescription] = useState<string>(todoItem.description);
+  const [isUpdating, setIsUpdating] = useState<boolean>(todoItem.isUpdating);
 
   const onDescriptionChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -31,6 +32,8 @@ export const TodoItem: FC<TodoItemProps> = (props) => {
   const onDoItClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
+    setIsUpdating(false);
+
     const updatedItem: TodoItemData = {
       ...todoItem,
       description: description,
@@ -40,11 +43,17 @@ export const TodoItem: FC<TodoItemProps> = (props) => {
     onDoItClick(updatedItem);
   };
 
+  const onEditClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+
+    setIsUpdating(true);
+  };
+
   return (
     <div className="TodoItem">
       <input type="checkbox" data-testid="checkbox" />
-      {todoItem.isUpdating ? (
-        <>
+      {isUpdating ? (
+        <div className="update">
           <input
             className="textbox"
             type="text"
@@ -55,9 +64,14 @@ export const TodoItem: FC<TodoItemProps> = (props) => {
           <button className="do-it" onClick={onDoItClickHandler}>
             Do It!
           </button>
-        </>
+        </div>
       ) : (
-        <div>{description}</div>
+        <div className="description-block">
+          <div>{description}</div>
+          <div className="actions">
+            <button onClick={onEditClickHandler}>edit</button>
+          </div>
+        </div>
       )}
     </div>
   );
