@@ -10,12 +10,18 @@ export const TodoList: FC = () => {
     setTodoItems((todoItems) => [...todoItems, addedItem]);
   };
 
-  const onDoItClickHandler = (updatedItem: TodoItemData) => {
+  const onDoItHandler = (updatedItem: TodoItemData) => {
     setTodoItems((current) => {
       return current.map((todo) => {
         if (todo.id === updatedItem.id) return updatedItem;
         return todo;
       });
+    });
+  };
+
+  const onDeleteHandler = (deletedItemId: number) => {
+    setTodoItems((current) => {
+      return current.filter((todo) => todo.id !== deletedItemId);
     });
   };
 
@@ -27,7 +33,8 @@ export const TodoList: FC = () => {
           todoItems.map((todoItem) => (
             <TodoItem
               todoItem={todoItem}
-              onDoItClick={onDoItClickHandler}
+              onDoIt={onDoItHandler}
+              onDelete={onDeleteHandler}
               key={todoItem.id}
             />
           ))

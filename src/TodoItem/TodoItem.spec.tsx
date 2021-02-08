@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { OnDoItClick, TodoItem, TodoItemData } from "./TodoItem";
+import { OnDelete, OnDoIt, TodoItem, TodoItemData } from "./TodoItem";
 
-const mockOnDoItClick: OnDoItClick = jest.fn();
+const mockOnDoIt: OnDoIt = jest.fn();
+const mockOnDelete: OnDelete = jest.fn();
 
 describe("TodoItem", () => {
   it("renders todo item description and checkbox", () => {
@@ -13,7 +14,13 @@ describe("TodoItem", () => {
       isUpdating: false,
     };
 
-    render(<TodoItem todoItem={todoItem} onDoItClick={mockOnDoItClick} />);
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
 
     const checkbox = screen.getByTestId("checkbox");
     const description = screen.getByText("some-description");
@@ -29,14 +36,20 @@ describe("TodoItem", () => {
       isUpdating: true,
     };
 
-    render(<TodoItem todoItem={todoItem} onDoItClick={mockOnDoItClick} />);
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
 
     const descriptionInput = screen.getByTestId(
       "description-input"
     ) as HTMLInputElement;
 
     const button = screen.getByText("Do It!") as HTMLButtonElement;
-    
+
     const description = screen.queryByText(
       "some-description"
     ) as HTMLDivElement;
@@ -54,9 +67,17 @@ describe("TodoItem", () => {
       isUpdating: true,
     };
 
-    render(<TodoItem todoItem={todoItem} onDoItClick={mockOnDoItClick} />);
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
 
-    let description = screen.getByTestId("description-input") as HTMLInputElement;
+    let description = screen.getByTestId(
+      "description-input"
+    ) as HTMLInputElement;
     expect(description.value).toBe("some-description");
 
     userEvent.type(description, "{selectall}{del}some-new-description");
@@ -74,12 +95,18 @@ describe("TodoItem", () => {
 
     const updatedItem: TodoItemData = { ...todoItem, isUpdating: false };
 
-    render(<TodoItem todoItem={todoItem} onDoItClick={mockOnDoItClick} />);
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
 
     const button = screen.getByText("Do It!");
     userEvent.click(button);
 
-    expect(mockOnDoItClick).toHaveBeenCalledWith(updatedItem);
+    expect(mockOnDoIt).toHaveBeenCalledWith(updatedItem);
   });
 
   it("should be able to edit the description when 'edit' is clicked", () => {
@@ -89,7 +116,13 @@ describe("TodoItem", () => {
       isUpdating: false,
     };
 
-    render(<TodoItem todoItem={todoItem} onDoItClick={mockOnDoItClick} />);
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
 
     let description = screen.queryByText("some-description");
     let descriptionInput = screen.queryByTestId("description-input");
@@ -105,5 +138,26 @@ describe("TodoItem", () => {
 
     expect(description).toBeNull();
     expect(descriptionInput).toBeVisible();
+  });
+
+  it("should call onDelete callback when 'delete' is clicked", () => {
+    const todoItemId = Date.now();
+    const todoItem: TodoItemData = {
+      id: todoItemId,
+      description: "some-description",
+      isUpdating: false,
+    };
+
+    render(
+      <TodoItem
+        todoItem={todoItem}
+        onDoIt={mockOnDoIt}
+        onDelete={mockOnDelete}
+      />
+    );
+    const button = screen.getByText("delete");
+    userEvent.click(button);
+
+    expect(mockOnDelete).toHaveBeenCalledWith(todoItemId);
   });
 });
