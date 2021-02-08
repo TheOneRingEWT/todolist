@@ -41,8 +41,6 @@ describe("TodoList", () => {
     userEvent.click(doItButton);
 
     const todoItem = screen.getByText("some-description");
-    userEvent.click(todoItem);
-
     expect(todoItem).toBeVisible();
   });
 
@@ -58,7 +56,7 @@ describe("TodoList", () => {
     const doItButton = screen.getByText("Do It!");
     userEvent.click(doItButton);
 
-    const todoItem = screen.getByText("some-description");
+    let todoItem = screen.getByText("some-description");
     expect(todoItem).toBeVisible();
 
     userEvent.click(addButton);
@@ -69,7 +67,32 @@ describe("TodoList", () => {
     const doItButton2 = screen.getByText("Do It!");
     userEvent.click(doItButton2);
 
+    todoItem = screen.getByText("some-description");
+    expect(todoItem).toBeVisible();
+
     const todoItem2 = screen.getByText("some-description2");
     expect(todoItem2).toBeVisible();
+  });
+
+  it("should be able to delete a TodoItem when Delete is clicked", () => {
+    render(<TodoList />);
+
+    const addButton = screen.getByText("Add Item");
+    userEvent.click(addButton);
+
+    const descriptionInput = screen.getByTestId("description-input");
+    userEvent.type(descriptionInput, "some-description");
+
+    const doItButton = screen.getByText("Do It!");
+    userEvent.click(doItButton);
+
+    let todoItem = screen.queryByText("some-description");
+    expect(todoItem).toBeVisible();
+
+    const deleteButton = screen.getByText("delete");
+    userEvent.click(deleteButton);
+
+    todoItem = screen.queryByText("some-description");
+    expect(todoItem).toBeNull();
   });
 });

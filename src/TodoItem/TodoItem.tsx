@@ -3,7 +3,8 @@ import "./TodoItem.scss";
 
 export interface TodoItemProps {
   todoItem: TodoItemData;
-  onDoItClick: OnDoItClick;
+  onDoIt: OnDoIt;
+  onDelete: OnDelete;
 }
 
 export interface TodoItemData {
@@ -12,12 +13,20 @@ export interface TodoItemData {
   isUpdating: boolean;
 }
 
-export interface OnDoItClick {
+export interface OnDoIt {
   (updatedItem: TodoItemData): void;
 }
 
+export interface OnDelete {
+  (deletedItemId: number): void;
+}
+
 export const TodoItem: FC<TodoItemProps> = (props) => {
-  const { todoItem, onDoItClick } = props;
+  const {
+    todoItem,
+    onDoIt: onDoItCallback,
+    onDelete: onDeleteCallback,
+  } = props;
   const [description, setDescription] = useState<string>(todoItem.description);
   const [isUpdating, setIsUpdating] = useState<boolean>(todoItem.isUpdating);
 
@@ -40,13 +49,19 @@ export const TodoItem: FC<TodoItemProps> = (props) => {
       isUpdating: false,
     };
 
-    onDoItClick(updatedItem);
+    onDoItCallback(updatedItem);
   };
 
   const onEditClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
 
     setIsUpdating(true);
+  };
+
+  const onDeleteClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+
+    onDeleteCallback(todoItem.id);
   };
 
   return (
@@ -70,6 +85,7 @@ export const TodoItem: FC<TodoItemProps> = (props) => {
           <div>{description}</div>
           <div className="actions">
             <button onClick={onEditClickHandler}>edit</button>
+            <button onClick={onDeleteClickHandler}>delete</button>
           </div>
         </div>
       )}

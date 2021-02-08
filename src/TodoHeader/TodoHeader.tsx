@@ -3,15 +3,15 @@ import { TodoItemData } from "../TodoItem/TodoItem";
 import "./TodoHeader.scss";
 
 export interface TodoHeaderProps {
-  onAddItemClick: OnAddItemClick;
+  onAddItem: OnAddItem;
 }
 
-export interface OnAddItemClick {
+export interface OnAddItem {
   (addedItem: TodoItemData): void;
 }
 
 export const TodoHeader: FC<TodoHeaderProps> = (props) => {
-  const { onAddItemClick } = props;
+  const { onAddItem: onAddItemClick } = props;
 
   const onAddItemClickHandler = (
     event: React.MouseEvent<HTMLButtonElement>

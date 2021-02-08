@@ -7,7 +7,7 @@ const onAddItemClick = jest.fn();
 
 describe("TodoHeader", () => {
   it("should render TodoHeader", () => {
-    render(<TodoHeader onAddItemClick={onAddItemClick} />);
+    render(<TodoHeader onAddItem={onAddItemClick} />);
 
     const header = screen.getByText("Git 'Er Done App");
     const button = screen.getByText("Add Item");
@@ -17,7 +17,7 @@ describe("TodoHeader", () => {
   });
 
   it("should return a new TodoItemData object when 'Add Item' is clicked", () => {
-    render(<TodoHeader onAddItemClick={onAddItemClick} />);
+    render(<TodoHeader onAddItem={onAddItemClick} />);
 
     const button = screen.getByText("Add Item") as HTMLButtonElement;
     userEvent.click(button);

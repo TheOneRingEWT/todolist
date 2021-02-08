@@ -6,11 +6,11 @@ import "./TodoList.scss";
 export const TodoList: FC = () => {
   const [todoItems, setTodoItems] = useState<TodoItemData[]>([]);
 
-  const onAddItemClickHandler = (addedItem: TodoItemData) => {
+  const onAddItemHandler = (addedItem: TodoItemData) => {
     setTodoItems((todoItems) => [...todoItems, addedItem]);
   };
 
-  const onDoItClickHandler = (updatedItem: TodoItemData) => {
+  const onDoItHandler = (updatedItem: TodoItemData) => {
     setTodoItems((current) => {
       return current.map((todo) => {
         if (todo.id === updatedItem.id) return updatedItem;
@@ -19,15 +19,22 @@ export const TodoList: FC = () => {
     });
   };
 
+  const onDeleteHandler = (deletedItemId: number) => {
+    setTodoItems((current) => {
+      return current.filter((todo) => todo.id !== deletedItemId);
+    });
+  };
+
   return (
     <div className="TodoList">
-      <TodoHeader onAddItemClick={onAddItemClickHandler} />
+      <TodoHeader onAddItem={onAddItemHandler} />
       <div className="item-list">
         {todoItems.length ? (
           todoItems.map((todoItem) => (
             <TodoItem
               todoItem={todoItem}
-              onDoItClick={onDoItClickHandler}
+              onDoIt={onDoItHandler}
+              onDelete={onDeleteHandler}
               key={todoItem.id}
             />
           ))
